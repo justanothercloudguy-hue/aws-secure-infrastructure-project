@@ -19,3 +19,11 @@ Resources were deployed across two availability zones to provide high availabili
 ## Decision: Public vs Private Subnets
 
 The network was built with 2 public and 2 private subnets across both availability zones. Public subnets are for the resources that need to be directly reachable from the internet such as the load balancer and NAT Gateway. Private subnets are for the resources that should never be directly exposed like the EC2 web servers. This separation limits the attack surface. Even if something in the public subnet is compromised, the private subnet adds another layer of protection that an attacker would have to get through.
+
+---
+
+## Decision: NAT Gateway
+
+A NAT Gateway was created in the public subnet to give private subnet resources outbound access to the internet for things like software updates without exposing them to inbound internet traffic.
+
+To manage cost, the NAT Gateway is only created during active build sessions and deleted afterward. At ~$0.045/hour it's the biggest cost driver in this project. The first two builds were used to confirm it functioned correctly. The plan going forward is to continue creating and deleting it per session until the full build is complete and ready to leave running.
