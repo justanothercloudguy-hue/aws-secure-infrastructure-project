@@ -6,10 +6,10 @@ When setting up EC2 access, I initially started with an SSH bastion host. AWS re
 
 ## Decision: VPC CIDR 10.0.0.0/16
 
-This CIDR was recommended in the project checklist. At the time of Build 1 I followed it without fully understanding why. What I know now is that 10.0.0.0 is a private IP range that doesn't route on the public internet, and /16 gives the VPC 65,536 IP addresses — large enough to support multiple subnets across availability zones without running out of space.
+This CIDR was recommended in the project checklist. At the time of Build 1 I followed it without fully understanding why. What I know now is that 10.0.0.0 is a private IP range that doesn't route on the public internet, and /16 gives the VPC 65,536 IP addresses large enough to support multiple subnets across availability zones without running out of space.
 
 ---
 
 ## Decision: Two Availability Zones
 
-Resources were deployed across two availability zones to provide high availability and fault tolerance. If one AZ experiences an outage, traffic and workloads can continue running in the second AZ without interruption. Two AZs was the most cost effective approach for this — enough redundancy for a production-style setup without the added expense of a third AZ.
+Resources were deployed across two availability zones to provide high availability and fault tolerance. So if incase one AZ experiences an outage, traffic and workloads can continue running in the second AZ without interruption. I thought just sticking with two AZs was the most cost effective approach for this enough redundancy for a production-style setup without the added expense of a third AZ.
