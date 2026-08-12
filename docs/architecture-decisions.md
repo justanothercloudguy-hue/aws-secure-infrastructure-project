@@ -40,3 +40,11 @@ I put the EC2 instances in private subnets to reduce exposure from attacks. By d
 ## Decision: ALB over NLB
 
 I chose an Application Load Balancer over a Network Load Balancer because this project is serving web traffic HTTP requests to a website. ALB operates at the application level and understands HTTP, which makes it the right fit for routing web traffic to EC2 instances. NLB operates at the network level and is built for high performance, low latency use cases like gaming or streaming where raw speed matters more than application level routing. Using NLB for a web application would be overkill for what this project requires. I don't yet fully understand every scenario where NLB would be the right choice over ALB that's something I plan to go deeper on as I continue building this project.
+
+---
+
+## Decision: Security Groups Reference Each Other by ID**
+
+I chose to reference security groups by ID rather than by IP address because IP addresses change. In this project alone I've been terminating and rebuilding the NAT Gateway every session — each time it gets a new IP. If I had used IP addresses in my rules they would break every single time. By referencing sg-alb directly in sg-ec2-web, I don't have to update anything when a resource gets rebuilt. The rule follows the security group not the IP. This same thinking applies in real world scenarios like replacing a load balancer during an upgrade — the IP changes but the security group stays attached and traffic keeps flowing.
+
+---
