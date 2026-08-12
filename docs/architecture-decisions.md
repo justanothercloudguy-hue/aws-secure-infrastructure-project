@@ -12,7 +12,7 @@ This CIDR was recommended in the project checklist. At the time of Build 1 I fol
 
 ## Decision: Two Availability Zones
 
-Resources were deployed across two availability zones to provide high availability and fault tolerance. So if incase one AZ experiences an outage, traffic and workloads can continue running in the second AZ without interruption. I thought just sticking with two AZs was the most cost effective approach for this enough redundancy for a production-style setup without the added expense of a third AZ.
+Resources were deployed across two availability zones to provide high availability and fault tolerance. So if incase one AZ experiences an outage, traffic and workloads can continue running in the second AZ without interruption. I thought just sticking with two AZs was the most cost effective approach for this enough redundancy for a production style setup without the added expense of a third AZ.
 
 ---
 
@@ -26,10 +26,17 @@ The network was built with 2 public and 2 private subnets across both availabili
 
 A NAT Gateway was created in the public subnet to give private subnet resources outbound access to the internet for things like software updates without exposing them to inbound internet traffic.
 
-To manage cost, the NAT Gateway is only created during active build sessions and deleted afterward. At ~$0.045/hour it's the biggest cost driver in this project. The first two builds were used to confirm it functioned correctly. The plan going forward is to continue creating and deleting it per session until the full build is complete and ready to leave running.
+To manage cost, the NAT Gateway is only created during active build sessions and deleted afterward. At $0.045/hour it's the biggest cost driver in this project. The first two builds were used to confirm it functioned correctly. The plan going forward is to continue creating and deleting it per session until the full build is complete and ready to leave running.
 
 ---
 
 ## Decision: EC2 Instances in Private Subnets
 
 I put the EC2 instances in private subnets to reduce exposure from attacks. By doing this the private subnets add an additional layer of security the only way in is through the load balancer, which gives me one controlled entry point. This in turn limits the attack surface and makes it harder for anyone trying to access sensitive information directly.
+
+
+---
+
+## Decision: ALB over NLB
+
+I chose an Application Load Balancer over a Network Load Balancer because this project is serving web traffic HTTP requests to a website. ALB operates at the application level and understands HTTP, which makes it the right fit for routing web traffic to EC2 instances. NLB operates at the network level and is built for high performance, low latency use cases like gaming or streaming where raw speed matters more than application level routing. Using NLB for a web application would be overkill for what this project requires. I don't yet fully understand every scenario where NLB would be the right choice over ALB that's something I plan to go deeper on as I continue building this project.
