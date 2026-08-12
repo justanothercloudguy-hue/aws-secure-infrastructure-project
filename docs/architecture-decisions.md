@@ -27,3 +27,9 @@ The network was built with 2 public and 2 private subnets across both availabili
 A NAT Gateway was created in the public subnet to give private subnet resources outbound access to the internet for things like software updates without exposing them to inbound internet traffic.
 
 To manage cost, the NAT Gateway is only created during active build sessions and deleted afterward. At ~$0.045/hour it's the biggest cost driver in this project. The first two builds were used to confirm it functioned correctly. The plan going forward is to continue creating and deleting it per session until the full build is complete and ready to leave running.
+
+---
+
+## Decision: EC2 Instances in Private Subnets
+
+I put the EC2 instances in private subnets to reduce exposure from attacks. By doing this the private subnets add an additional layer of security the only way in is through the load balancer, which gives me one controlled entry point. This in turn limits the attack surface and makes it harder for anyone trying to access sensitive information directly.
