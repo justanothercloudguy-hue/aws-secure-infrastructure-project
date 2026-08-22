@@ -20,7 +20,7 @@ The role only has two permissions, the minimum needed to communicate with SSM Se
 
 ---
 
-## Defense in Depth**
+## Defense in Depth
 
 During this build I started to understand that security isn't just one thing you bolt on at the end — it lives between and on top of every layer of the infrastructure. 
 
@@ -32,7 +32,7 @@ No single layer is the security. All of them together are the security. If one l
 
 ---
 
-## Blast Radius Analysis**
+## Blast Radius Analysis
 
 As someone still learning, I needed to understand what would happen if I misconfigured something or if part of this infrastructure was compromised. Here's my understanding so far of the blast radius at each layer.
 
