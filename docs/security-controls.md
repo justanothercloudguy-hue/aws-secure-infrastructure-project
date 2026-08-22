@@ -17,3 +17,13 @@ sg-database is in place for future use — it will only accept connections from 
 In Week 2 I created an IAM Role for EC2 called EC2-WebServer-Role using the principle of least privilege. I attached the AmazonSSMManagedInstanceCore managed policy and added a custom inline CloudWatch Logs policy.
 
 The role only has two permissions, the minimum needed to communicate with SSM Session Manager and the ability to create and write logs to CloudWatch. Nothing else. The EC2 instance cannot touch S3, modify IAM, or spin up other resources. If the instance were ever compromised, the blast radius is limited to what that role can do — which is almost nothing outside of its intended function.
+
+---
+
+**## Defense in Depth**
+
+During this build I started to understand that security isn't just one thing you bolt on at the end — it lives between and on top of every layer of the infrastructure. 
+
+Starting from the beginning: MFA on both root and IAM accounts, a dedicated IAM user for daily use instead of root, a VPC that isolates resources from the public internet, public and private subnets that separate what's exposed from what's protected, security groups that control exactly what traffic can move between layers, an IAM role with only the minimum permissions the EC2 instances need, and SSM instead of SSH so there's no exposed port 22.
+
+No single layer is the security. All of them together are the security. If one layer fails, the next one is still there.
