@@ -30,8 +30,6 @@ No single layer is the security. All of them together are the security. If one l
 
 ---
 
----
-
 ## Blast Radius Analysis
 
 As someone still learning, I needed to understand what would happen if I misconfigured something or if part of this infrastructure was compromised. Here's my understanding so far of the blast radius at each layer.
@@ -47,3 +45,17 @@ From what I understand the public and private subnets live on separate routing p
 I don't yet fully understand every attack vector that could exist in this setup but this is my current thinking. I expect my understanding of blast radius to deepen as I continue building and studying.
 
 ---
+
+## Monitoring and Logging
+
+### What I'm Logging and Why
+
+Three monitoring services are active in this build:
+
+**CloudTrail** captures every API call and console action made in the AWS account — who did what, when, and from where. This is what allowed me to detect both break and fix scenarios in this project. Without CloudTrail there would be no record of the security group change or the IAM role modification.
+
+**CloudWatch** monitors the health and performance of resources — CPU utilization, instance status checks, and ALB unhealthy host counts. Alarms are configured to trigger SNS notifications when thresholds are breached. This removes the need to manually check each service and creates a centralized view of infrastructure health.
+
+**GuardDuty** provides threat detection by analyzing CloudTrail logs, VPC flow logs, and DNS logs for suspicious behavior. It runs in the background passively — no configuration needed beyond enabling it.
+
+Together these three services mean nothing happens in this infrastructure without a record of it. That's the foundation of operational visibility.
