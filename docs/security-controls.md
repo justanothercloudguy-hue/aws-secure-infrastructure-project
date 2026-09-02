@@ -59,3 +59,41 @@ Three monitoring services are active in this build:
 **GuardDuty** provides threat detection by analyzing CloudTrail logs, VPC flow logs, and DNS logs for suspicious behavior. It runs in the background passively — no configuration needed beyond enabling it.
 
 Together these three services mean nothing happens in this infrastructure without a record of it. That's the foundation of operational visibility.
+
+---
+
+### What Alerts I've Set Up
+
+Three CloudWatch alarms are configured, all connected to an SNS topic that sends email notifications:
+
+**Unhealthy Hosts (ALB)** — triggers when the load balancer detects one or more EC2 instances failing health checks. This is why two instances are running across two AZs — if one goes down the alarm fires while the second instance continues serving traffic.
+
+**Status Check Failed** — monitors the EC2 instance itself for system level failures. Where the unhealthy hosts alarm watches from the ALB's perspective, this alarm watches the instance directly. They complement each other — one catches network level issues, the other catches instance level issues.
+
+**High CPU** — triggers when CPU utilization exceeds 80% for two consecutive 5 minute periods. In a production environment this would signal the need to scale up or investigate a runaway process.
+
+---
+
+### How I'd Respond to Each Alert
+
+**Unhealthy Hosts** — investigate which instance failed its health check, check CloudWatch logs for errors, attempt to restart the instance. If it doesn't recover launch a replacement.
+
+**Status Check Failed** — check the instance status in EC2 console, review system logs via SSM Session Manager, reboot the instance if unresponsive.
+
+**High CPU** — connect via SSM and investigate running processes, determine if it's a legitimate traffic spike or a runaway process, scale up if needed.
+
+In a real environment each of these would follow a documented incident response playbook with defined escalation paths. That's something to build out in a future iteration of this project.
+
+---
+
+### Cost Breakdown of Monitoring Tools
+
+| Service | Monthly Cost | Notes |
+|---------|--------------|-------|
+| CloudTrail | $0.00 | Within free tier for this project size |
+| CloudWatch | $0.00 | Within free tier for this project size |
+| GuardDuty | $0.00 | Within free tier for this project size |
+| SNS | $0.00 | Within free tier |
+| **Total** | **$0.00** | All monitoring services running at no additional cost |
+
+One of the advantages of this monitoring setup is that all three core services — CloudTrail, CloudWatch, and GuardDuty — fall within AWS free tier limits for a project of this size. In a production environment with higher log volumes and more resources these costs would increase but remain relatively low compared to the value they provide.
