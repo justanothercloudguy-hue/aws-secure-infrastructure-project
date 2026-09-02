@@ -26,6 +26,20 @@ With AdministratorAccess attached to EC2-WebServer-Role any compromised EC2 inst
 
 ## Remediation
 
+After identifying the unauthorized policy attachment via CloudTrail, the AdministratorAccess policy was removed by navigating to IAM → Roles → EC2-WebServer-Role and detaching the policy. The role was restored to its original permissions — AmazonSSMManagedInstanceCore and the CloudWatch Logs inline policy. The fix was completed at 11:22 AM and verified by reviewing the role's permission policies.
+
 ## Prevention
 
+To prevent unauthorized IAM role modifications in the future the following controls could be implemented:
+
+- **Restrict IAM permissions** — limit which users can attach or detach policies from roles. Not everyone who has AWS access should be able to modify IAM roles.
+- **CloudWatch alerts on CloudTrail** — create a metric filter that triggers an SNS alert any time a policy is attached to a role. This would have alerted immediately at 11:11 AM rather than requiring manual investigation.
+- **IAM Access Analyzer** — regularly review roles and their permissions to identify overly permissive configurations before they become a problem.
+
 ## Lessons Learned
+
+Manual investigation of CloudTrail is necessary but has an inherent limitation — it creates a gap between when a change is made and when it is discovered. In this exercise the overprivileged role existed for 11 minutes before being caught. In a real environment that window could be hours or days.
+
+In a future build I want to solve this by implementing immediate automated alerts for IAM role modifications. Not all changes carry the same risk — attaching AdministratorAccess is far more dangerous than attaching a read-only policy. Alerts should be rated by severity based on the type of change being made.
+
+Additionally this exercise reinforced that access controls need to be hardened at the IAM level itself — limiting who can modify roles and policies is as important as monitoring for when they do.
